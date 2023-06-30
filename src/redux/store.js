@@ -3,7 +3,9 @@ import thunk from 'redux-thunk';
 import greetingReducer from './greetings';
 
 const store = configureStore({
-  reducer: greetingReducer,
+  reducer: {
+    greeting: greetingReducer,
+  },
   middleware: [thunk],
 });
 

@@ -1,22 +1,26 @@
-import { createAsyncThunk } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 
-const GET_GREETING = 'hello-rails-react/greeting/GET_GREETING';
-const initialState = '';
+export const fetchGreeting = createAsyncThunk(
+  'greeting/fetchGreeting',
+  async () => {
+    const response = await fetch('http://127.0.0.1:3000/api/message');
+    const data = await response.json();
+    return data;
+  },
+);
 
-export const fetchGreeting = createAsyncThunk(GET_GREETING, async () => {
-  const data = await fetch('http://127.0.0.1:3000/api/message');
-  const response = await data.json();
-  return response;
+const greetingReducer = createSlice({
+  name: 'greeting',
+  initialState: [],
+  reducers: {
+    Greeting(state, action) {
+      state.push(action.payload);
+    },
+  },
+  extraReducers: {
+    [fetchGreeting.fulfilled]: (state, action) => action.payload,
+  },
 });
 
-// eslint-disable-next-line default-param-last
-const greetingReducer = (state = initialState, action) => {
-  switch (action.type) {
-    case `${GET_GREETING}/fulfilled`:
-      return action.payload;
-    default:
-      return state;
-  }
-};
-
-export default greetingReducer;
+export const { Greeting } = greetingReducer.actions;
+export default greetingReducer.reducer;
